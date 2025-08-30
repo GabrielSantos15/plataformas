@@ -1,4 +1,4 @@
-class Player {
+class Player extends Sprite {
   constructor({
     width,
     height,
@@ -7,11 +7,29 @@ class Player {
     velocity,
     speed,
     jumpForce,
+    doubleJump,
+    imageSrc,
+    scale,
+    frameMax,
+    offset,
+    inverter,
   }) {
+    super({
+      width,
+      height,
+      position,
+      imageSrc,
+      scale,
+      frameMax,
+      offset,
+      inverter,
+    });
+
     this.width = width;
     this.height = height;
     this.speed = speed;
     this.jumpForce = jumpForce;
+    this.doubleJump = doubleJump;
     this.direction = direction;
     this.position = position;
     this.velocity = velocity;
@@ -32,10 +50,6 @@ class Player {
     this.checkForHorizontalCollisions();
     this.checkForVerticalCollisions();
 
-    this.draw();
-  }
-
-  draw() {
     // ctx.fillStyle = "#00664d3a";
     // ctx.fillRect(
     //   this.camerabox.position.x,
@@ -43,9 +57,10 @@ class Player {
     //   this.camerabox.width,
     //   this.camerabox.height
     // );
-
-    ctx.fillStyle = "#060";
-    ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+    // ctx.fillStyle = "#060";
+    // ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+    if(this.velocity.y < 0)this.frameCurrent.y = 3
+    this.updateSprite();
   }
 
   verifyActions() {
@@ -95,7 +110,9 @@ class Player {
         this.position.y + this.height + this.velocity.y >= block.position.y
       ) {
         this.velocity.y = 0;
-        this.position.y = block.position.y - this.height - .1;
+        this.position.y = block.position.y - this.height - 0.1;
+        this.doubleJump = true;
+        this.frameCurrent.y = 0
         break;
       }
 
@@ -108,7 +125,7 @@ class Player {
         this.position.y + this.velocity.y <= block.position.y + block.height
       ) {
         this.velocity.y = 0;
-        this.position.y = block.position.y + block.height + .1;
+        this.position.y = block.position.y + block.height + 0.1;
         break;
       }
     }

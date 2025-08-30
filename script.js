@@ -13,6 +13,7 @@ const platformsBlocks = [
     height: 30,
   }),
 ];
+const enemys = [];
 
 const camera = {
   position: {
@@ -44,13 +45,21 @@ const player = new Player({
     right: false,
     left: false,
   },
+  doubleJump: true,
+  imageSrc: "assents/Player/sprites.png",
+  scale: 2.5,
+  frameMax: {
+    x:12,
+    y:11,
+  },
+  offset: { x: 115, y: 170},
+  inverter: false,
 });
 // =================================== Gerenciador do jogo ============================
 
-
-createNewPlatform(player)
-createNewPlatform(player)
-createNewPlatform(player)
+createNewPlatform(player);
+createNewPlatform(player);
+createNewPlatform(player);
 
 function game() {
   ctx.setTransform(1, 0, 0, 1, 0, 0); // reseta transformações
@@ -60,8 +69,11 @@ function game() {
   ctx.translate(-player.camerabox.position.x, -player.camerabox.position.y);
   player.update();
 
-  platformsBlocks.forEach((block,index) => {
+  platformsBlocks.forEach((block, index) => {
     block.update(index);
+  });
+  enemys.forEach((enemy, index) => {
+    enemy.update(index);
   });
 
   requestAnimationFrame(game);
@@ -74,16 +86,24 @@ window.addEventListener("keydown", (event) => {
   const key = event.key.toLowerCase();
   switch (key) {
     case "w":
-      if (player.velocity.y == 0) player.velocity.y -= player.jumpForce;
+      if (player.velocity.y == 0){
+        player.velocity.y -= player.jumpForce;
+      }else if(player.doubleJump){
+        player.velocity.y = 0
+        player.velocity.y -= player.jumpForce * 0.75;
+        player.doubleJump = false
+      }
       break;
     case "a":
       player.direction.left = true;
+       player.inverter = false
       break;
     case "s":
       player.direction.down = true;
       break;
     case "d":
       player.direction.right = true;
+      player.inverter = true
       break;
   }
 });
