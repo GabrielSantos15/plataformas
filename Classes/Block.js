@@ -17,7 +17,11 @@ class Block {
   }
 
   draw() {
-    ctx.fillStyle = "#410c1dff";
+    ctx.fillStyle = "#1d0000ff";
     ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+    ctx.fillStyle = "#005a26ff";
+    ctx.fillRect(this.position.x, this.position.y, this.width, this.height * 0.3);
+    ctx.fillStyle = "#0e6e58ff";
+    ctx.fillRect(this.position.x, this.position.y, this.width, this.height * 0.1);
   }
 }

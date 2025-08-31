@@ -6,6 +6,7 @@ class Player extends Sprite {
     direction,
     velocity,
     speed,
+    life,
     jumpForce,
     doubleJump,
     imageSrc,
@@ -13,6 +14,9 @@ class Player extends Sprite {
     frameMax,
     offset,
     inverter,
+    status,
+    attackBox,
+    damageProtection = false,
   }) {
     super({
       width,
@@ -27,12 +31,16 @@ class Player extends Sprite {
 
     this.width = width;
     this.height = height;
+    this.life = life;
     this.speed = speed;
     this.jumpForce = jumpForce;
     this.doubleJump = doubleJump;
     this.direction = direction;
     this.position = position;
+    this.attackBox = attackBox;
     this.velocity = velocity;
+    this.damageProtection = damageProtection;
+    this.status = status;
     this.camerabox = {
       position: {
         x: this.position.x - 90,
@@ -43,6 +51,9 @@ class Player extends Sprite {
     };
   }
   update() {
+    if (this.life == 0) {
+      gameOver = true;
+    }
     this.updateCamerabox();
     this.verifyActions();
     this.applyGravity();
@@ -50,16 +61,16 @@ class Player extends Sprite {
     this.checkForHorizontalCollisions();
     this.checkForVerticalCollisions();
 
-    // ctx.fillStyle = "#00664d3a";
-    // ctx.fillRect(
-    //   this.camerabox.position.x,
-    //   this.camerabox.position.y,
-    //   this.camerabox.width,
-    //   this.camerabox.height
-    // );
-    // ctx.fillStyle = "#060";
-    // ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
-    if(this.velocity.y < 0)this.frameCurrent.y = 3
+    this.controlSprite();
+    if (debugMode && this.status.attack) {
+      ctx.fillStyle = "#f00e";
+      ctx.fillRect(
+        this.attackBox.position.x,
+        this.attackBox.position.y,
+        this.attackBox.width,
+        this.attackBox.height
+      );
+    }
     this.updateSprite();
   }
 
@@ -83,13 +94,9 @@ class Player extends Sprite {
   }
 
   checkCollisions() {
-    if (this.position.y >= canvas.height) {
-      // alert("Game Over");
-      // window.location.reload();
+    if (this.position.y >= platformsBlocks[0].position.y + 500) {
+      gameOver = true;
     }
-    // if (this.position.x <= 0) this.position.x = 0;
-    // if (this.position.x + this.width >= canvas.width)
-    //   this.position.x = canvas.width - this.width;
   }
 
   applyGravity() {
@@ -112,7 +119,7 @@ class Player extends Sprite {
         this.velocity.y = 0;
         this.position.y = block.position.y - this.height - 0.1;
         this.doubleJump = true;
-        this.frameCurrent.y = 0
+        if (this.frameCurrent.y == 3) this.frameCurrent.y = 0;
         break;
       }
 
@@ -172,5 +179,48 @@ class Player extends Sprite {
       width: canvas.width,
       height: 700,
     };
+  }
+
+  controlSprite() {
+    // levando dano
+    if (this.status.damageState) {
+      if (this.frameCurrent.y != 10) {
+        this.frameCurrent.x = 0;
+        this.frameCurrent.y = 10;
+      } else if (this.frameCurrent.x == 6) {
+        this.status.damageState = false;
+      }
+      // atacando
+    } else if (this.status.attack) {
+      if (!(this.frameCurrent.y >= 6 && this.frameCurrent.y <= 9)) {
+        this.frameCurrent.x = 0;
+        this.frameCurrent.y = randomNumber(6, 9);
+      } else if (this.frameCurrent.x >= this.frameMax.x - 1) {
+        this.status.attack = false;
+      }
+    } else if (this.velocity.y != 0) {
+      this.frameCurrent.y = 3;
+    } else if (this.direction.left || this.direction.right) {
+      this.frameCurrent.y = 1;
+    } else {
+      this.frameCurrent.y = 0;
+      if (this.frameCurrent.x >= 0) this.frameCurrent.x = 0;
+    }
+  }
+
+  demage(hitForce) {
+    if (this.damageProtection) return;
+    this.life -= hitForce;
+    this.status.damageState = true;
+    this.damageProtection = true;
+    setTimeout(() => (this.damageProtection = false), 1500);
+  }
+
+  attack() {
+    this.status.attack = true;
+    this.attackBox.position.x = this.inverter
+      ? this.position.x +this.width - this.attackBox.offset.x
+      : this.position.x - this.attackBox.offset.x;
+    this.attackBox.position.y = this.position.y - this.attackBox.offset.y;
   }
 }

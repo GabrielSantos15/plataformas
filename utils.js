@@ -1,11 +1,11 @@
 function collision({ object1, object2 }) {
-    return (
-      object1.position.y + object1.height >= object2.position.y &&
-      object1.position.y <= object2.position.y + object2.height &&
-      object1.position.x <= object2.position.x + object2.width &&
-      object1.position.x + object1.width >= object2.position.x
-    )
-  }
+  return (
+    object1.position.y + object1.height >= object2.position.y &&
+    object1.position.y <= object2.position.y + object2.height &&
+    object1.position.x <= object2.position.x + object2.width &&
+    object1.position.x + object1.width >= object2.position.x
+  );
+}
 
 function createNewPlatform(player) {
   const lastPlatform = platformsBlocks[platformsBlocks.length - 1];
@@ -48,15 +48,23 @@ function createNewPlatform(player) {
 }
 
 function createNewEnemy(indexBlock) {
+  const directionRandom =  Math.random() > 0.5 ? "left" : "right"
   enemys.push(
     new Enemy({
       position: {
-        x: platformsBlocks[indexBlock].position.x,
+        x:
+          platformsBlocks[indexBlock].position.x +
+          platformsBlocks[indexBlock].width / 2,
         y: platformsBlocks[indexBlock].position.y - 40,
       },
       width: 50,
       height: 40,
-      speed: 0.5,
+      speed: 1,
+      velocity: {
+        x: 0,
+        y: 0,
+      },
+      attackForce: 1,
       indexBlock: indexBlock,
       imageSrc: "assents/Enemy/Frog.png",
       scale: 1.5,
@@ -65,12 +73,33 @@ function createNewEnemy(indexBlock) {
         y: 1,
       },
       offset: { x: 15, y: 20 },
-      inverter: true,
+      inverter:  directionRandom == "right",
       framesHold: 15,
+      life: 2,
+      direction: {
+        up: false,
+        down: false,
+        right: directionRandom == "right",
+        left: directionRandom == "left",
+      },
     })
   );
 }
 
 function randomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
+}
+
+function showInfos() {
+  document.querySelector("#altura").innerHTML = Math.floor(
+    ((player.position.y + player.height) * -1) / 100
+  );
+  document.querySelector("#life").innerHTML = player.life;
+}
+
+function writeInfos() {
+  ctx.font = "50px Times New Roman"; // Muda a fonte para demonstrar
+  ctx.fillStyle = "red"; // Muda a cor
+  ctx.strokeStyle = "black"; // Cor da linha de contorno
+  ctx.strokeText("Utilize a teclas E para ATACAR", 50, 100); // Usa strokeText()
 }

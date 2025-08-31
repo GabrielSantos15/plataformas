@@ -5,12 +5,14 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const gravity = 0.1;
+let gameOver = false;
+let debugMode = false;
 
 const platformsBlocks = [
   new Block({
-    position: { x: 0, y: canvas.height - 30 },
-    width: canvas.width,
-    height: 30,
+    position: { x: 0, y: 0 },
+    width: 1500,
+    height: 100,
   }),
 ];
 const enemys = [];
@@ -27,11 +29,13 @@ const player = new Player({
   height: 70,
   position: {
     x: 0,
-    y: 700,
+    y: -70,
   },
+  life: 5,
   speed: 3,
   jumpForce: 8,
   status: {
+    damageState: false,
     atack: false,
     defend: false,
   },
@@ -45,14 +49,23 @@ const player = new Player({
     right: false,
     left: false,
   },
+  attackBox: {
+    width: 70,
+    height: 80,
+    position: {
+      x: 0,
+      y: -70,
+    },
+    offset: { x: 40, y: 10 },
+  },
   doubleJump: true,
   imageSrc: "assents/Player/sprites.png",
   scale: 2.5,
   frameMax: {
-    x:12,
-    y:11,
+    x: 12,
+    y: 11,
   },
-  offset: { x: 115, y: 170},
+  offset: { x: 115, y: 170 },
   inverter: false,
 });
 // =================================== Gerenciador do jogo ============================
@@ -60,14 +73,18 @@ const player = new Player({
 createNewPlatform(player);
 createNewPlatform(player);
 createNewPlatform(player);
+createNewPlatform(player);
 
 function game() {
+  if (gameOver) {
+    document.querySelector("#gameOverContainer").style.display = "flex";
+    return;
+  }
   ctx.setTransform(1, 0, 0, 1, 0, 0); // reseta transformações
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // aplica deslocamento da câmera
   ctx.translate(-player.camerabox.position.x, -player.camerabox.position.y);
-  player.update();
 
   platformsBlocks.forEach((block, index) => {
     block.update(index);
@@ -75,38 +92,47 @@ function game() {
   enemys.forEach((enemy, index) => {
     enemy.update(index);
   });
+  player.update();
+
+  showInfos();
 
   requestAnimationFrame(game);
 }
-game();
 
-ctx.fillRect(0, 0, 50, 50);
+function play() {
+  game();
+  document.querySelector("#menu").style.display = "none";
+}
 
 window.addEventListener("keydown", (event) => {
   const key = event.key.toLowerCase();
   switch (key) {
     case "w":
-      if (player.velocity.y == 0){
+      if (player.velocity.y == 0) {
         player.velocity.y -= player.jumpForce;
-      }else if(player.doubleJump){
-        player.velocity.y = 0
+      } else if (player.doubleJump) {
+        player.velocity.y = 0;
         player.velocity.y -= player.jumpForce * 0.75;
-        player.doubleJump = false
+        player.doubleJump = false;
       }
       break;
     case "a":
       player.direction.left = true;
-       player.inverter = false
+      player.inverter = false;
       break;
     case "s":
       player.direction.down = true;
       break;
     case "d":
       player.direction.right = true;
-      player.inverter = true
+      player.inverter = true;
+      break;
+    case "e":
+      debugMode ? (debugMode = false) : (debugMode = true);
       break;
   }
 });
+
 window.addEventListener("keyup", (event) => {
   const key = event.key.toLowerCase();
   switch (key) {
@@ -121,3 +147,9 @@ window.addEventListener("keyup", (event) => {
       break;
   }
 });
+
+window.addEventListener("click", (event) => {
+  player.attack();
+});
+
+play();

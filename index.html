@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,22 +13,71 @@
     <script src="Classes/Block.js" defer></script>
     <script src="script.js" defer></script>
     <style>
-        *{
+        * {
             margin: 0;
             padding: 0;
             /* background-color: #000; */
         }
-        body{
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
             overflow: hidden;
         }
-        canvas{
+
+        canvas {
             /* background-color: #3a0000; */
-            background-image: radial-gradient(#b39aec,#000);
+            background-image: radial-gradient(#b39aec, #000);
+        }
+
+        .tela{
+            position: fixed;
+            inset: 0;
+            background-color: #000;
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            text-align: center;
+        }
+        .tela article{
+            background-color: #b39aec;
+            width: min(600px,100%);
+        }
+        #infos{
+            position: fixed;
+            inset: 0;
+        }   
+        h3,h2{
+            width: fit-content;
+            background-color: #000;
+            color: #fff;
         }
     </style>
 </head>
+
 <body>
-    <a href="assents/Enemy/Frog.png"></a>
+    <section id="menu" class="tela">
+        <article >
+            <h1>GAME</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque officiis est atque eveniet fuga voluptas mollitia provident, doloremque repudiandae? Error accusamus vero atque amet qui ad explicabo nesciunt velit eaque.</p>
+            <button onclick="play()">Jogar</button>
+        </article>
+    </section> 
+    <section id="gameOverContainer" style="display: none;" class="tela">
+        <article >
+            <h1>Game Over</h1>
+            <button onclick="window.location.reload()">Jogar</button>
+        </article>
+    </section> 
+    <section id="infos">
+        <h2>
+            Vidas:
+            <output id="life"></output>
+        </h2>
+        <h3>Altura: <output id="altura"></output></h3>
+    </section>
     <canvas id="tela"></canvas>
 </body>
+
 </html>

@@ -8,7 +8,7 @@ class Sprite {
     frameMax = { x: 1, y: 1 },
     offset = { x: 0, y: 0 },
     inverter = false,
-    framesHold = 5
+    framesHold = 5,
   }) {
     this.width = width;
     this.height = height;
@@ -31,11 +31,17 @@ class Sprite {
   draw() {
     ctx.save();
     if (!this.loaded) return;
+    
+    if(debugMode){
+      ctx.fillStyle = "hsla(189, 100%, 50%, 0.40)"
+      ctx.fillRect(this.position.x,this.position.y,this.width,this.height)
+    }
 
     if (this.inverter) {
       ctx.scale(-1, 1);
       ctx.translate(-canvas.width, 0);
     }
+
 
     ctx.drawImage(
       this.image,
