@@ -16,6 +16,7 @@ const platformsBlocks = [
   }),
 ];
 const enemys = [];
+const particles = [];
 
 const camera = {
   position: {
@@ -91,6 +92,9 @@ function game() {
   });
   enemys.forEach((enemy, index) => {
     enemy.update(index);
+  });
+  particles.forEach((particle, index) => {
+    particle.update(index);
   });
   player.update();
 

@@ -44,6 +44,22 @@ class Enemy extends Sprite {
 
   update(index) {
     if (this.indexBlock < 0 || this.life <= 0) {
+      console.log(enemys[index].position.y)
+      particles.push(
+        new Particle({
+          position: {
+            x: enemys[index].position.x,
+            y: enemys[index].position.y,
+          },
+          width: 30,
+          height: 30,
+          imageSrc : "assets/Enemy/deathParticle.png",
+          frameMax: {x:7,y:1},
+          offset: { x: 0, y: 0 },
+          scale: 2,
+          framesHold: 15,
+        })
+      );
       enemys.splice(index, 1);
       return;
     }
@@ -70,28 +86,22 @@ class Enemy extends Sprite {
         this.direction.right = false;
         this.inverter = this.faceRight;
       }
-    }else{
-       if (this.position.x + this.width < player.position.x) {
+    } else {
+      if (this.position.x + this.width < player.position.x) {
         this.direction.right = true;
         this.direction.left = false;
         this.inverter = !this.faceRight;
       }
-      if (
-        this.position.x > player.position.x
-      ) {
+      if (this.position.x > player.position.x) {
         this.direction.left = true;
         this.direction.right = false;
         this.inverter = this.faceRight;
       }
-      if (
-        this.position.y + this.height < player.position.y
-      ) {
+      if (this.position.y + this.height < player.position.y) {
         this.direction.down = true;
         this.direction.up = false;
       }
-      if (
-        this.position.y > player.position.y
-      ) {
+      if (this.position.y > player.position.y) {
         this.direction.up = true;
         this.direction.down = false;
       }
@@ -100,17 +110,17 @@ class Enemy extends Sprite {
 
   verifyActions() {
     this.velocity.x = 0;
-    
+
     if (this.direction.left) {
       this.velocity.x = -this.speed;
     }
     if (this.direction.right) {
       this.velocity.x = this.speed;
     }
-    
+
     this.position.x += this.velocity.x;
     this.velocity.y = 0;
-    
+
     if (this.direction.down) {
       this.velocity.y = +this.speed;
     }
