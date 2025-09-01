@@ -12,9 +12,11 @@ class Enemy extends Sprite {
     frameMax,
     scale,
     direction,
+    faceRight,
     inverter = false,
     framesHold,
     life,
+    fly = false,
   }) {
     super({
       width,
@@ -36,6 +38,8 @@ class Enemy extends Sprite {
     this.indexBlock = indexBlock;
     this.direction = direction;
     this.life = life;
+    this.faceRight = faceRight;
+    this.fly = fly;
   }
 
   update(index) {
@@ -51,33 +55,70 @@ class Enemy extends Sprite {
   }
 
   move() {
-    if (this.position.x <= platformsBlocks[this.indexBlock].position.x) {
-      this.direction.right = true;
-      this.direction.left = false;
-      this.inverter = true
-    }
-    if (
-      this.position.x + this.width >
-      platformsBlocks[this.indexBlock].position.x +
-      platformsBlocks[this.indexBlock].width
-    ) {
-      this.direction.left = true;
-      this.direction.right = false;
-      this.inverter = false
+    if (!this.fly) {
+      if (this.position.x <= platformsBlocks[this.indexBlock].position.x) {
+        this.direction.right = true;
+        this.direction.left = false;
+        this.inverter = !this.faceRight;
+      }
+      if (
+        this.position.x + this.width >
+        platformsBlocks[this.indexBlock].position.x +
+          platformsBlocks[this.indexBlock].width
+      ) {
+        this.direction.left = true;
+        this.direction.right = false;
+        this.inverter = this.faceRight;
+      }
+    }else{
+       if (this.position.x + this.width < player.position.x) {
+        this.direction.right = true;
+        this.direction.left = false;
+        this.inverter = !this.faceRight;
+      }
+      if (
+        this.position.x > player.position.x
+      ) {
+        this.direction.left = true;
+        this.direction.right = false;
+        this.inverter = this.faceRight;
+      }
+      if (
+        this.position.y + this.height < player.position.y
+      ) {
+        this.direction.down = true;
+        this.direction.up = false;
+      }
+      if (
+        this.position.y > player.position.y
+      ) {
+        this.direction.up = true;
+        this.direction.down = false;
+      }
     }
   }
 
   verifyActions() {
     this.velocity.x = 0;
-
+    
     if (this.direction.left) {
       this.velocity.x = -this.speed;
     }
     if (this.direction.right) {
       this.velocity.x = this.speed;
     }
-
+    
     this.position.x += this.velocity.x;
+    this.velocity.y = 0;
+    
+    if (this.direction.down) {
+      this.velocity.y = +this.speed;
+    }
+    if (this.direction.up) {
+      this.velocity.y = -this.speed;
+    }
+
+    this.position.y += this.velocity.y;
   }
 
   demage() {

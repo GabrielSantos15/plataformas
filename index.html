@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <!-- <script src="data/enemys.js" defer></script> -->
     <script src="utils.js" defer></script>
     <script src="Classes/Sprites.js" defer></script>
     <script src="Classes/Player.js" defer></script>
@@ -22,33 +23,39 @@
         body {
             font-family: Arial, Helvetica, sans-serif;
             overflow: hidden;
+            cursor:url('assents/cursor.png') 4 12,auto;
         }
-
+        
         canvas {
             /* background-color: #3a0000; */
-            background-image: radial-gradient(#b39aec, #000);
+            background-image: radial-gradient(#191b25, #000000);
         }
-
-        .tela{
+        
+        .tela {
             position: fixed;
             inset: 0;
             background-color: #000;
-            
+            z-index: 2;
+
             display: flex;
             justify-content: center;
             align-items: center;
-            
+
             text-align: center;
         }
-        .tela article{
+
+        .tela article {
             background-color: #b39aec;
-            width: min(600px,100%);
+            width: min(600px, 100%);
         }
-        #infos{
+
+        #infos {
             position: fixed;
             inset: 0;
-        }   
-        h3,h2{
+        }
+
+        h3,
+        h2 {
             width: fit-content;
             background-color: #000;
             color: #fff;
@@ -58,18 +65,20 @@
 
 <body>
     <section id="menu" class="tela">
-        <article >
+        <article>
             <h1>GAME</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque officiis est atque eveniet fuga voluptas mollitia provident, doloremque repudiandae? Error accusamus vero atque amet qui ad explicabo nesciunt velit eaque.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque officiis est atque eveniet fuga voluptas
+                mollitia provident, doloremque repudiandae? Error accusamus vero atque amet qui ad explicabo nesciunt
+                velit eaque.</p>
             <button onclick="play()">Jogar</button>
         </article>
-    </section> 
+    </section>
     <section id="gameOverContainer" style="display: none;" class="tela">
-        <article >
+        <article>
             <h1>Game Over</h1>
             <button onclick="window.location.reload()">Jogar</button>
         </article>
-    </section> 
+    </section>
     <section id="infos">
         <h2>
             Vidas:

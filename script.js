@@ -59,7 +59,7 @@ const player = new Player({
     offset: { x: 40, y: 10 },
   },
   doubleJump: true,
-  imageSrc: "assents/Player/sprites.png",
+  imageSrc: "assets/Player/sprites.png",
   scale: 2.5,
   frameMax: {
     x: 12,
